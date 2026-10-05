@@ -17,8 +17,8 @@ sudo cp -r app /opt/extreme-mcp/
 sudo install -o root -g root -m 755 scan-host-key.py /opt/extreme-mcp/scan-host-key.py
 sudo chown -R root:root /opt/extreme-mcp/app
 
-[ -f /etc/extreme-mcp/extreme-mcp.env ] || sudo install -o root -g extreme-mcp -m 640 extreme-mcp.env.example /etc/extreme-mcp/extreme-mcp.env
-[ -f /etc/extreme-mcp/inventory.yaml ] || sudo install -o root -g extreme-mcp -m 640 inventory.example.yaml /etc/extreme-mcp/inventory.yaml
+sudo test -f /etc/extreme-mcp/extreme-mcp.env || sudo install -o root -g extreme-mcp -m 640 extreme-mcp.env.example /etc/extreme-mcp/extreme-mcp.env
+sudo test -f /etc/extreme-mcp/inventory.yaml || sudo install -o root -g extreme-mcp -m 640 inventory.example.yaml /etc/extreme-mcp/inventory.yaml
 sudo install -o root -g root -m 644 extreme-mcp.service /etc/systemd/system/extreme-mcp.service
 sudo systemctl daemon-reload
 
