@@ -1,14 +1,13 @@
 # extreme-mcp
 
 A **read-only** [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that lets an AI agent
-inspect Extreme Networks switches for monitoring and troubleshooting, built for
-[OpenClaw Enterprise](https://github.com/mholovetskyi/openclawenterprise) (OCE) on Ubuntu Server.
+inspect Extreme Networks switches for monitoring and troubleshooting.
 
 It can look. It cannot change anything.
 
 - **Fabric Engine** (VOSS) is the primary target. **Switch Engine** (EXOS) is supported for the SNMP tools.
 - **SNMPv3 authPriv** is the primary data path. **SSH** (opt-in) fills the gaps with fixed `show` commands.
-- Runs as its own systemd service on the same host as OCE, bound to **127.0.0.1 only**.
+- Runs as its own systemd service bound to **127.0.0.1 only**.
 - Backend credentials never leave the service. The agent receives results, not passwords.
 
 ## Tools
@@ -54,7 +53,7 @@ its credentials as a root-only systemd credential, and limit what it can do on t
 
 `get_running_config` returns the configuration **unfiltered**, because its readers are network administrators. Set
 `CONFIG_REDACT=true` in `/etc/extreme-mcp/extreme-mcp.env` to redact secret-looking values (`app/redact.py`, best-effort) before
-the text leaves the server. Either way the configuration text passes through OCE, so treat OCE's session logs as sensitive.
+the text leaves the server. Either way the configuration text passes through the agent, so treat the agent's session logs as sensitive.
 
 ## Security model
 
@@ -77,7 +76,7 @@ The point of this project is that a prompt-injected or confused agent **cannot**
 ## Architecture
 
 ```
-OpenClaw Enterprise (agent)
+MCP client (agent)
         |  MCP, Streamable HTTP
         v
 http://127.0.0.1:8765/mcp   extreme-mcp.service  (dedicated non-root account)
@@ -146,16 +145,16 @@ Fabric Engine does not run one-off commands over an SSH exec channel, so each ca
 sends only the fixed `show` command, answers the `--More--` pager, and closes. The switch may authenticate each
 login separately (for example via RADIUS).
 
-### Register with OpenClaw Enterprise
+### Register with your MCP client
 
 ```
-openclaw mcp add extreme-network-readonly --transport streamable-http \
-  --url http://127.0.0.1:8765/mcp \
-  --include list_switches,get_switch_health,get_interface,get_interface_errors,get_lldp_neighbors,get_dhcp_status
-openclaw mcp probe extreme-network-readonly
+Name:      extreme-network-readonly
+Transport: streamable-http
+URL:       http://127.0.0.1:8765/mcp
+Include:   list_switches,get_switch_health,get_interface,get_interface_errors,get_lldp_neighbors,get_dhcp_status
 ```
 
-Add the SSH tool names to `--include` (via `openclaw mcp tools`) once SSH is enabled. The include list is a second guard
+Add the SSH tool names to the include list once SSH is enabled. The include list is a second guard
 on top of the server's own registration. Give the tools only to the agent that should use them, and tell that agent
 in its instructions to use these tools for switch questions.
 

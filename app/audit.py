@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timezone
 
 log = logging.getLogger("extreme-mcp.audit")
-REQUESTER = "openclaw-network-agent"  # OCE gives no caller identity over loopback HTTP
+REQUESTER = "mcp-agent"  # loopback HTTP carries no caller identity
 
 
 class Audit:

@@ -193,7 +193,7 @@ def build_server(inv: Inventory, snmp: SnmpClient, audit: Audit, ssh: SshClient 
                                   contains: str | None = None) -> dict:
             """Return the newest log entries from a Fabric Engine switch (lines 1-200). Optional severity
             (INFO, WARNING, ERROR, FATAL: that level and worse) and contains (text filter).
-            In login lines, 'on host <IP>' is the connecting client (the MCP/OCE host), not the switch;
+            In login lines, 'on host <IP>' is the connecting client (the MCP server host), not the switch;
             the switch's own address is the management_ip field."""
             return await st.get_switch_logs(inv, ssh, switch, lines, severity, contains)
 

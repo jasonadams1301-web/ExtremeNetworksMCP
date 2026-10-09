@@ -220,7 +220,7 @@ async def test_dhcp_tools_reject_exos_unknown_and_unregistered_without_ssh(inv, 
     assert tool not in {t.name for t in await off.list_tools()}
 
 
-# ---- the switch's own address is always stated, so the agent does not confuse it with the OCE host ----
+# ---- the switch's own address is always stated, so the agent does not confuse it with the MCP server host ----
 async def test_list_switches_includes_management_ip(inv):
     mcp = server(inv, FakeSsh())
     out = json.loads((await mcp.call_tool("list_switches", {})).__getitem__(0).text)

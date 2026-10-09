@@ -1,7 +1,7 @@
 """Best-effort secret redaction for switch configuration text.
 
 A running configuration holds SNMP communities, RADIUS/TACACS keys, password hashes, authentication keys and
-certificate material. None of that may reach the agent (or OCE's logs), so the config tool redacts before returning
+certificate material. None of that may reach the agent (or the agent's logs), so the config tool redacts before returning
 anything. The approach is deliberately blunt: it over-redacts rather than risk a leak, and it can never be perfect, so
 callers must still treat the output as sensitive.
 """
